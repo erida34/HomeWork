@@ -2,20 +2,80 @@ const readline = require('readline');
 
 const { stdout } = process;
 const rowsTerminal = stdout.getWindowSize()[1] -7;
-let Koeficient = 8.0001;
+let koeficient = 8.0001;
 let widthDelta = 8;
-/*
-* @param {Number} x - argument
-* */
-function sinusoid(x){
-    return Math.sin(x);
+let idWindow = 1;
+let bottomEdge = -rowsTerminal/2,
+    topEdge = rowsTerminal/2;
+let funcUse = "Math.sin(x)";
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+
+function displayMenu() {
+    console.clear();
+    idWindow = 2;
+    console.log(`\x1b[36m1.\x1b[0m Function: \x1b[32m${funcUse}\x1b[0m`);
+    console.log(`\x1b[36m2.\x1b[0m Сoefficient: \x1b[32m${koeficient}\x1b[0m`);
+    console.log(`\x1b[36m3.\x1b[0m Bottom Edge: \x1b[32m${bottomEdge}\x1b[0m`);
+    console.log(`\x1b[36m4.\x1b[0m Top Edge: \x1b[32m${topEdge}\x1b[0m`);
+    console.log('\x1b[36m5.\x1b[0m \x1b[32mDone\x1b[0m');
 }
 
-function quad(x){
-    return Math.sin(x);
+function handleOption(option) {
+    switch(option) {
+        case '1':
+            rl.question('Enter function code\x1b[31m(you can use object Math from JS)\x1b[0m: ', (answer) => {
+                if(answer !== "")
+                    funcUse = answer;
+                displayMenu();
+                askOption();
+            });
+            break;
+        case '2':
+            rl.question('Enter Сoefficient: ', (answer) => {
+                if(answer !== "" && !Number.isNaN(Number(answer)))
+                    koeficient = answer;
+                displayMenu();
+                askOption();
+            });
+            break;
+        case '3':
+            rl.question('Enter Bottom Edge: ', (answer) => {
+                if(answer !== "" && !Number.isNaN(Number(answer)))
+                    bottomEdge = answer;
+                displayMenu();
+                askOption();
+            });
+            break;
+        case '4':
+            rl.question('Enter Top Edge: ', (answer) => {
+                if(answer !== "" && !Number.isNaN(Number(answer)))
+                    topEdge = answer;
+                displayMenu();
+                askOption();
+            });
+            break;
+        case '5':
+            idWindow = 0;
+            break;
+        case '':
+            idWindow = 0;
+            break;
+        default:
+            console.log('Invalid option. Please try again.');
+            displayMenu();
+            askOption();
+    }
 }
 
-let funcUse = quad;
+function askOption() {
+    rl.question('\x1b[33mSelect an option(default: 5):\x1b[0m ', (answer) => {
+        handleOption(answer);
+    });
+}
 
 /*
 * @param {function(Number)} func - function
@@ -25,19 +85,18 @@ let funcUse = quad;
 * */
 function drawSymbolPlot(func, bottomEdge, topEdge, stringCount){
     console.clear();
-
     const columnTerminal = stdout.getWindowSize()[0] - widthDelta;
     let step = (topEdge - bottomEdge)/stringCount;
     let maxXLength = Number.MIN_VALUE;
     for(let i = bottomEdge; i <= topEdge; i++){
-        maxXLength = Math.max(maxXLength, String(Math.round(i*step*10/Koeficient)/10).length)
+        maxXLength = Math.max(maxXLength, String(Math.round(i*step*10/koeficient)/10).length)
     }
     let usesSpace = columnTerminal - maxXLength;
     let minimum = Number.MAX_VALUE,
         maximum = Number.MIN_VALUE;
     for(let i = bottomEdge; i <= topEdge; i+= step){ // make maximum and minimum values
-        minimum = Math.min(func(i/Koeficient), minimum);
-        maximum = Math.max(func(i/Koeficient), maximum);
+        minimum = Math.min(func(i/koeficient), minimum);
+        maximum = Math.max(func(i/koeficient), maximum);
     }
     let localMin = minimum/(maximum - minimum)*(usesSpace);
     let localMax = maximum/(maximum - minimum)*(usesSpace);
@@ -62,10 +121,10 @@ function drawSymbolPlot(func, bottomEdge, topEdge, stringCount){
     }
     console.log(firstLine)
     for(let i = bottomEdge, j = 0; i <= topEdge, j < stringCount; i++, j++){ // draw plot
-        let value = func(i*step/Koeficient)/(maximum - minimum)*(usesSpace);
+        let value = func(i*step/koeficient)/(maximum - minimum)*(usesSpace);
         let resultString = "";
         if(j % 3 === 0)
-            resultString += Math.round(i*step*10/Koeficient)/10;
+            resultString += Math.round(i*step*10/koeficient)/10;
         else
             resultString += "│";
         resultString += " ".repeat(maxXLength - resultString.length);
@@ -83,36 +142,51 @@ function drawSymbolPlot(func, bottomEdge, topEdge, stringCount){
             resultString += "*";
         console.log(resultString);
     }
-    console.log(`$ - minimum; # - maximum;  min=${minimum}; max=${maximum};`);
-    console.log("click arrows keyboard, or use mouse wheel :) (Maybe you should hold down the ctrl)");
-    console.log("c-exit; q-reduce width; w-increase width; ↑-move up; ↓-move down; →-increase argument; ←-reduce argument")
+    console.log(`\x1b[35m$ - minimum; # - maximum;\x1b[0m  min=\x1b[32m${minimum}\x1b[0m; max=\x1b[32m${maximum}\x1b[0m;`);
+    console.log("\x1b[34mclick arrows keyboard, or use mouse wheel :)\x1b[0m \x1b[31m(Maybe you should hold down the ctrl)\x1b[0m");
+    console.log("\x1b[33mc-exit; m-menu; q-reduce width; w-increase width; ↑-move up; ↓-move down; →-increase argument; ←-reduce argument\x1b[0m")
 }
-let bottomEdge = -rowsTerminal/2,
-    topEdge = rowsTerminal/2;
+
 
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
 process.stdin.on('keypress', (str, key) => {
-    console.clear();
-    if (key.name === 'up') {
-        bottomEdge -= 1;
-        topEdge -= 1;
-    } else if (key.name === 'down') {
-        bottomEdge += 1;
-        topEdge += 1;
-    } else if (key.name === 'left') {
-        Koeficient++;
-    } else if (key.name === 'right') {
-        Koeficient--;
-    } else if (key.name === 'q') {
-        widthDelta++;
-    } else if (key.name === 'w' && widthDelta > 7) {
-        widthDelta--;
-    } else if (key.name === 'c') {
-        process.exit(-1);
+    if(idWindow === 1){
+        displayMenu();
+        askOption();
+    }
+    if(idWindow === 0){
+        if (key.name === 'up') {
+            bottomEdge -= 1;
+            topEdge -= 1;
+        } else if (key.name === 'down') {
+            bottomEdge += 1;
+            topEdge += 1;
+        } else if (key.name === 'left') {
+            koeficient++;
+        } else if (key.name === 'right') {
+            koeficient--;
+        } else if (key.name === 'q') {
+            widthDelta++;
+        } else if (key.name === 'w' && widthDelta > 7) {
+            widthDelta--;
+        } else if (key.name === 'c') {
+            process.exit(-1);
+        } else if (key.name === 'm') {
+            idWindow = 1;
+            displayMenu();
+            askOption();
+        }
+        let resultFunc = `(x)=>{return ${funcUse}}`;
+        drawSymbolPlot(eval(resultFunc), bottomEdge, topEdge, rowsTerminal);
+
     }
 
-    drawSymbolPlot(funcUse, bottomEdge, topEdge, rowsTerminal);
 });
 
-drawSymbolPlot(funcUse, bottomEdge, topEdge, rowsTerminal);
+displayMenu();
+askOption();
+
+
+
+
