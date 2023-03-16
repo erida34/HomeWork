@@ -1,3 +1,4 @@
+
 let all_tables = [];
 
 /*
@@ -13,9 +14,7 @@ for(let i = 1; i <= 10; i++){
 
 function formating_output(datable, tables_in_row){
     console.clear();
-    const { stdout } = process;
-    const columnTerminal = stdout.getWindowSize()[0];
-
+    const columnTerminal = process.stdout.columns;
     const all_tables = datable.length;
     const all_tables_rows = Math.ceil( all_tables/tables_in_row );
     const columns_for_datas = columnTerminal - tables_in_row - 1;
