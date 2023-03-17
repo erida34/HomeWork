@@ -11,14 +11,6 @@ for(let i = 1; i <= 10; i++){
     all_tables.push(current_table);
 }
 
-function sumArray(array) {
-  let sum = 0;
-  for (let i = 0; i < array.length; i++) {
-    sum += array[i];
-  }
-  return sum;
-}
-
 function formating_output(datable, tables_in_row){
 	if (!process.stdout.isTTY) {
   		console.log('that is not a tty terminal');
