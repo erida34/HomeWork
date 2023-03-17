@@ -22,15 +22,13 @@ jobs:
       - name: Build and push format_output
         uses: docker/build-push-action@v4
         with:
-          context: ./format_output
-          file: ./Dockerfile
+          context: format_output
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/format_output
       - name: Build and push plotter
         uses: docker/build-push-action@v4
         with:
-          context: ./plotter
-          file: ./Dockerfile
+          context: plotter
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/plotter
           
