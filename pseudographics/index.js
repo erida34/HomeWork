@@ -1,5 +1,11 @@
 const readline = require('readline');
 const process = require('process');
+
+if (!process.stdout.isTTY) {
+  	console.log('that is not a tty terminal');
+  	process.exit(0);
+}
+
 const rowsTerminal = process.stdout.rows -7;
 
 let koeficient = 8.0001;
@@ -13,10 +19,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-if (!process.stdout.isTTY) {
-  	console.log('that is not a tty terminal');
-  	process.exit(0);
-}
+
 
 function displayMenu() {
     console.clear();
