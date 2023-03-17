@@ -104,4 +104,4 @@ function formating_output(datable, tables_in_row){
 }
 
 formating_output(all_tables, 5);
-console.log("it's happy :)")
+console.log("it's happy :) Not bad")
