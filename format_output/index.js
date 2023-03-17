@@ -1,6 +1,5 @@
 
 let all_tables = [];
-
 /*
 * generate tables
 * */
@@ -12,7 +11,19 @@ for(let i = 1; i <= 10; i++){
     all_tables.push(current_table);
 }
 
+function sumArray(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
+  return sum;
+}
+
 function formating_output(datable, tables_in_row){
+	if (!process.stdout.isTTY) {
+  		console.log('that is not a tty terminal');
+  		return 0;
+	}
     console.clear();
     const columnTerminal = process.stdout.columns;
     const all_tables = datable.length;
@@ -39,8 +50,6 @@ function formating_output(datable, tables_in_row){
     for (let i = 0; i < coefc_tables.length; i++) {
         columns_for_table.push(Math.floor(coefc_tables[i] * columns_for_datas) / coefc_tables.reduce((partialSum, a) => partialSum + a, 0))
     }
-
-
     let height_of_rows = [];
     for (let i = 0; i < all_tables_rows; i++) {
         let max = 0;
@@ -104,4 +113,3 @@ function formating_output(datable, tables_in_row){
 }
 
 formating_output(all_tables, 5);
-console.log("it's happy :) Not bad and happy")
