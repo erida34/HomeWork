@@ -16,22 +16,22 @@ jobs:
       - name: Build and push pseudographics
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./pseudographics/Dockerfile
+          context: ./pseudographics
+          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pseudographics
       - name: Build and push format_output
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./format_output/Dockerfile
+          context: ./format_output
+          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/format_output
       - name: Build and push plotter
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./plotter/Dockerfile
+          context: ./plotter
+          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/plotter
           
