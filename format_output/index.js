@@ -14,7 +14,7 @@ for(let i = 1; i <= 10; i++){
 function formating_output(datable, tables_in_row){
 	if (!process.stdout.isTTY) {
   		console.log('that is not a tty terminal');
-  		return 0;
+  		process.exit(0);
 	}
     console.clear();
     const columnTerminal = process.stdout.columns;
